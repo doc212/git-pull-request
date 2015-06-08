@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+Merge a git hub pull request by its number
+
 Copyright (c) 2015 Tuan-Tu Tran
 
 The MIT License (MIT)
