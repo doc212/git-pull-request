@@ -66,12 +66,12 @@ prNumber = args.pullRequest
 g=pygithub3.Github(login=login, password=password, user=login, repo=repo)
 pr=g.pull_requests.get(prNumber)
 
+msgFile = "/tmp/githubprmsg%s"%prNumber
 if args.empty:
     msg=""
 elif args.message!=None:
     msg=args.message
 else:
-    msgFile = "/tmp/githubprmsg%s"%prNumber
     if not os.path.exists(msgFile):
         with open(msgFile,"w") as fh:
             fh.write("\n\n#enter a message to merge pull request #%s\n"%pr.number)
@@ -88,7 +88,8 @@ else:
         msg=None
 if msg!=None:
     g.pull_requests.merge(prNumber, msg)
-    os.remove(msgFile)
+    if os.path.exists(msgFile):
+        os.remove(msgFile)
 else:
     logging.warn("aborting because of empty msg")
     sys.exit(1)
