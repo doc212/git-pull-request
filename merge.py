@@ -33,7 +33,7 @@ import subprocess
 import os
 import re
 import pygithub3
-parser=argparse.ArgumentParser(description="Merge a github pull request by its number")
+parser=argparse.ArgumentParser(description="Merge a github pull request by its number. If neither -m or -e is given, gvim is fired up to input a pull request message")
 parser.add_argument("pullRequest", help="the pull request number", metavar="PULL_REQUEST", type=int)
 group=parser.add_mutually_exclusive_group()
 group.add_argument("-m","--message", help="the message for the merge commit", metavar="MESSAGE", default=None)
