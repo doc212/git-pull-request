@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import pygithub3
+import argparse
 
 import sys
 import logging
@@ -32,7 +33,14 @@ import subprocess
 import os
 import re
 import pygithub3
-logging.basicConfig(level=logging.DEBUG)
+parser=argparse.ArgumentParser(description="Merge a github pull request by its number. If neither -m or -e is given, gvim is fired up to input a pull request message")
+parser.add_argument("pullRequest", help="the pull request number", metavar="PULL_REQUEST", type=int)
+group=parser.add_mutually_exclusive_group()
+group.add_argument("-m","--message", help="the message for the merge commit", metavar="MESSAGE", default=None)
+group.add_argument("-e","--empty-message", help="use an empty message", action="store_true", dest="empty")
+parser.add_argument("-v","--verbose", action="store_const", dest="logging", const=logging.DEBUG, default=logging.INFO, help="show debug logs")
+args=parser.parse_args()
+logging.basicConfig(level=args.logging)
 
 def shell(cmd, *accepted_codes):
     p=subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
@@ -53,25 +61,32 @@ login = githubConfig("login")
 password = githubConfig("password")
 repo = githubConfig("repo")
 
-prNumber = int(sys.argv[1])
+prNumber = args.pullRequest
 
 g=pygithub3.Github(login=login, password=password, user=login, repo=repo)
 pr=g.pull_requests.get(prNumber)
 
-msgFile = "/tmp/githubprmsg%s"%prNumber
-if not os.path.exists(msgFile):
-    with open(msgFile,"w") as fh:
-        fh.write("\n\n#enter a message to merge pull request #%s\n"%pr.number)
-        fh.write("#from %s into %s\n"%(pr.head["ref"], pr.base["ref"]))
-        fh.write("\n#an empty message will abort the merge\n")
-shell("gvim %s"%msgFile)
-lines=[]
-with open(msgFile) as fh:
-    for l in fh:
-        if not l.startswith("#"):
-            lines.append(l)
-msg="".join(lines).strip()
-if msg!="":
+if args.empty:
+    msg=""
+elif args.message!=None:
+    msg=args.message
+else:
+    msgFile = "/tmp/githubprmsg%s"%prNumber
+    if not os.path.exists(msgFile):
+        with open(msgFile,"w") as fh:
+            fh.write("\n\n#enter a message to merge pull request #%s\n"%pr.number)
+            fh.write("#from %s into %s\n"%(pr.head["ref"], pr.base["ref"]))
+            fh.write("\n#an empty message will abort the merge\n")
+    shell("gvim %s"%msgFile)
+    lines=[]
+    with open(msgFile) as fh:
+        for l in fh:
+            if not l.startswith("#"):
+                lines.append(l)
+    msg="".join(lines).strip()
+    if msg=="":
+        msg=None
+if msg!=None:
     g.pull_requests.merge(prNumber, msg)
     os.remove(msgFile)
 else:
