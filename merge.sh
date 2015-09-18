@@ -21,8 +21,17 @@ EOF
 fi
 
 set -e
+
+echo merge-pull-request $1
 merge-pull-request $1 -e
+
+echo git fetch origin master:master
 git fetch origin master:master
+echo git checkout master
 git checkout master
+
+echo delete remote merged branches
 git branch --merged|grep master -v|xargs -i git push origin :{}
+
+echo delete local merged branches
 git branch --merged|grep master -v|xargs git branch -d
