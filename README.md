@@ -32,6 +32,6 @@ For easier use, you should put `merge.sh` somewhere in your `PATH` under a frien
 ### Customization
 
 By editing some variables in `merge.sh`, it is easily possible to customize:
-* the command issued to invoke `merge.py` (default: `merge-pull-request` but you can change it to the full path to  `merge.py`)
+* the command issued to invoke `merge.py` (default: `merge-pull-request` but you can change it to the full path to  `merge.py` or another alias in your `PATH`)
 * the remote name (default: `origin`)
 * the master branch (default: `master`)
