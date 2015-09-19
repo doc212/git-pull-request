@@ -7,7 +7,7 @@ A script written in Python to merge git branches by doing pull requests in GitHu
 The standalone script `merge.py` can be used directly to merge pull requests by number.
 Try `merge.py --help` for more info.
 
-However, what it does is simply merge pull requests in in GitHub.
+However, what it does is simply merge pull requests in GitHub.
 Your local branch still exists, as does the merged remote branch.
 And your local master is not updated.
 
