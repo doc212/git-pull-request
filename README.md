@@ -11,8 +11,8 @@ However, what it does is simply merge pull requests in in GitHub.
 Your local branch still exists, as does the merged remote branch.
 And your local master is not updated.
 
-To some extent, the script `merge.sh` does that for you (implemented by #4).
-But it requires that you copy (or link) merge.py somewhere in your `PATH` under the name `merge-pull-request`
+To some extent, the script `merge.sh` does that for you (implemented in [issue #4](https://github.com/doc212/git-pull-request/issues/4)).
+But it requires that you copy (or link) `merge.py` somewhere in your `PATH` under the name `merge-pull-request` (to bypass this or use a different name, see [Customization](Customization) below).
 
 You can then invoke merge.sh like this:
 
@@ -22,16 +22,16 @@ For easier use, you should put `merge.sh` somewhere in your `PATH` under a frien
 
 ### What `merge.sh` does
 
-* merge the given pull request with an empty message by invoking `merge-pull-request #pr-number -e`
-* then update local master with origin master (ff only) by invoking git fetch origin master:master
-* checks out master
+* merge the given `PULL_REQUEST_NUMBER` with an empty message by invoking `merge-pull-request PULL_REQUEST_NUMBER -e`
+* update local `master` with `origin`'s `master` (ff only) by invoking `git fetch origin master:master`
+* checks out `master`
 * then for each merge branch :
-    * delete the remote branch with the same name on origin
+    * delete the remote branch with the same name on `origin`
     * delete the local branch
 
 ### Customization
 
 By editing some variables in `merge.sh`, it is easily possible to customize:
-* the command issued to invoke merge.py (default: `merge-pull-request`)
+* the command issued to invoke `merge.py` (default: `merge-pull-request` but you can change it to the full path to  `merge.py`)
 * the remote name (default: `origin`)
 * the master branch (default: `master`)
